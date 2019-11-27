@@ -26,22 +26,6 @@ pub enum AtomicHashMapError {
     Full
 }
 
-/*
-impl Deref for AtomicHashMap {
-    type Target = AtomicHashMap;
-
-    fn deref(&self) -> &AtomicHashMap {
-        &self
-    }
-}
-
-impl DerefMut for AtomicHashMap {
-    fn deref_mut(&mut self) -> &mut AtomicHashMap {
-        self
-    }
-}
-*/
-
 impl AtomicHashMap {
     /// Construct a new AtomicHashMap with a given size.
     /// NOTE: Size must be a power of two.
