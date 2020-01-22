@@ -1,5 +1,6 @@
-use core::sync::atomic::{Ordering, AtomicU64};
 use std::boxed::Box;
+
+use core::sync::atomic::{Ordering, AtomicU64};
 
 /// Integer Hash function from MurmurHash3's integer finalizer
 pub fn hash_key(val: u64) -> u64 {
@@ -59,6 +60,10 @@ impl AtomicHashMap {
         }
     }
 
+    pub fn with_capacity(size: usize) -> AtomicHashMap {
+        AtomicHashMap::new(size)
+    }
+
     /// Atomically set a key:value in the hashmap
     ///
     /// The search for an empty slot or the valid key is linear in the array of keys.
@@ -99,11 +104,10 @@ impl AtomicHashMap {
     }
 
     /// Atomically get a value from the hashmap
-    pub fn get(&self, key: u64) -> Option<u64> {
-
-        assert!(key != 0, "AtomicHashMap cannot have a key with value 0");
+    pub fn get(&self, key: &u64) -> Option<u64> {
+        assert!(*key != 0, "AtomicHashMap cannot have a key with value 0");
         // Get a hash of the key
-        let start_index = hash_key(key) as usize;
+        let start_index = hash_key(*key) as usize;
 
         // Start somewhere in the middle of the values based on the hash of the key
         for index in start_index..(start_index+self.size) {
@@ -111,7 +115,7 @@ impl AtomicHashMap {
             // an easy modulo of the total capacity
             let index = index & (self.size - 1);
 
-            if self.keys[index].load(Ordering::Acquire) != key {
+            if self.keys[index].load(Ordering::Acquire) != *key {
                 // Didn't find the wanted key at this index.. continue
                 continue;
             }
@@ -157,7 +161,7 @@ mod tests {
         }
 
         for x in 1..=size {
-            assert_eq!(hashtable.get(x).unwrap_or(0xffffffff), x);
+            assert_eq!(hashtable.get(&x).unwrap_or(0xffffffff), x);
         }
     }
 

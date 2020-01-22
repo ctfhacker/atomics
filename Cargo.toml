@@ -1,11 +1,20 @@
 [package]
-name = "atomichashtable"
+name = "atomics-rs"
 version = "0.1.0"
-authors = ["randomlshb@gmail.com <randomlshb@gmail.com>"]
+authors = ["cld251@gmail.com <cld251@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-crossbeam = "0.3.2"
-loom = "*"
+
+[dev-dependencies]
+criterion = "0.3.0"
+rayon = "1.2.1"
+chashmap = "2.2.2"
+contrie = "0.1.4"
+cht = "0.1.2"
+
+[[bench]]
+name = "atomichashmap"
+harness = false
